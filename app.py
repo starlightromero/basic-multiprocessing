@@ -13,8 +13,9 @@ def do_something(seconds):
 if __name__ == "__main__":
 
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        f1 = executor.submit(do_something, 1)
-        print(f1.result())
+        results = [executor.submit(do_something, 1) for _ in range(10)]
+        for f in concurrent.futures.as_completed(results):
+            print(f.result())
 
     finish = time.perf_counter()
 
