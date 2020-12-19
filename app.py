@@ -1,5 +1,5 @@
 import time
-import multiprocessing
+import concurrent.futures
 
 start = time.perf_counter()
 
@@ -7,20 +7,14 @@ start = time.perf_counter()
 def do_something(seconds):
     print(f"Sleeping {seconds} second(s)...")
     time.sleep(1)
-    print("Done Sleeping...")
+    return "Done Sleeping..."
 
 
 if __name__ == "__main__":
 
-    processes = []
-
-    for _ in range(10):
-        p = multiprocessing.Process(target=do_something, args=[1])
-        p.start()
-        processes.append(p)
-
-    for process in processes:
-        process.join()
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        f1 = executor.submit(do_something, 1)
+        print(f1.result())
 
     finish = time.perf_counter()
 
